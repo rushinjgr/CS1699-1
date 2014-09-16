@@ -1,0 +1,136 @@
+Deliverable 1
+CS-1699 Software Testing - Fall 2014 
+Authors: Daryl Putnam & Tyler Raborn
+Software: GNU Ping 
+Software Source Code: http://cvs.savannah.gnu.org/viewvc/inetutils/inetutils/ping/ping.c
+Software Documentation: http://www.gnu.org/software/inetutils/manual/html_node/ping-invocation.html
+
+Introduction
+GNU Ping was chosen as the piece of software to be tested due to its simple, terminal-based input/output, a moderate number of features to test, and the open-source availability of its source code. The subset of GNU Ping to be tested include the following program functionalities: 
+	
+		<Daryl's Feature #1>
+		
+		<Daryl's Feature #2>
+		
+		<Daryl's Feature #3>
+		
+		<Daryl's Feature #4>
+		
+		<Daryl's Feature #5>
+
+		-p <pattern>
+	You may specify up to 16 ``pad'' bytes to fill out the packet you send. This is useful for 
+	diagnosing data-dependent problems in a network. For example, -p ff will cause the sent 
+	packet to be filled with all ones. 
+
+       -w deadline
+	Specify  a  timeout, in seconds, before ping exits regardless of how many packets have been sent or received. In this case ping does not stop after count packet are sent, it waits either for
+	deadline expire or until count probes are answered or for some error notification from network.
+
+       -T timestamp option
+	Set special IP  timestamp  options.   timestamp  option  may  be
+	either  tsonly  (only  timestamps),  tsandaddr  (timestamps  and
+	addresses) or tsprespec host1 [host2 [host3 [host4]]] (timestamp
+	prespecified hops).
+
+		-c count
+	Stop after sending count ECHO_REQUEST packets. With deadline option, ping waits for count ECHO_REPLY packets, until the timeout expires.
+	
+		-i interval
+	Wait interval seconds between sending each packet. The default is to wait for one second between each packet normally, 
+	or not to wait in flood mode. Only super-user may set interval to values less 0.2 seconds.		
+	
+Pre-Test Constants & Definitions:
+		PING_DEFAULT_OUTPUT: Defined as a repeating cascade of results of pinging the passed-in ip address in the following format:
+		
+			64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.036 ms
+			64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.068 ms
+			64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.066 ms
+			64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.065 ms
+			64 bytes from 127.0.0.1: icmp_seq=4 ttl=64 time=0.075 ms
+			64 bytes from 127.0.0.1: icmp_seq=5 ttl=64 time=0.077 ms
+			64 bytes from 127.0.0.1: icmp_seq=6 ttl=64 time=0.063 ms
+			64 bytes from 127.0.0.1: icmp_seq=7 ttl=64 time=0.081 ms
+			64 bytes from 127.0.0.1: icmp_seq=8 ttl=64 time=0.065 ms
+			...
+
+		To be terminated at the tester's discretion via the ^C bash command.
+
+Requirement #1: PING_PACKET_DATA -  Command Line Pattern Specification
+
+	Test Cases:
+
+		IDENTIFIER: 0
+		TEST CASE: test 0 argument for PING_PACKET_DATA functionality
+		PRECONDITIONS: Network is connected 
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -p 0 localhost'
+		OUTPUT VALUES: 
+			PATTERN: 0x00
+			PING_DEFAULT_OUTPUT
+		POSTCONDITIONS: The above specified output shall be the ONLY output of this execution.
+	        
+		IDENTIFIER: 1
+		TEST CASE: test -1 argument for PING_PACKET_DATA functionality
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following: 'ping -p -1 localhost'
+		OUTPUT VALUES: 
+			ping: patterns must be specified as hex digits
+		POSTCONDITIONS: The above specified output value shall be the ONLY output value of the program.
+
+		IDENTIFIER: 3
+		TEST CASE: test string argument for PING_PACKET_DATA functionality
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: foo
+		EXECUTION STEPS: execute the following: 'ping -p foo localhost'
+		OUTPUT VALUES: 
+			ping: patterns must be specified as hex digits
+		POSTCONDITIONS: The above specified output value shall be the ONLY output value of the program.		
+
+Requirement #2: PING_TIMEOUT_SPEC -  Command Line Timeout Specification
+    Description: Specfies an amount of time that Ping will continue to produce output as specified by requirement PING_DEFAULT_OUTPUT barring a user or system enforced exit.
+		
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test 0 argument for PING_TIMEOUT_SPEC functionality
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -w 0 localhost'
+		OUTPUT VALUES: PING_DEFAULT_OUTPUT
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program
+		
+		IDENTIFIER: 2
+		TEST CASE: test -1 argument for PING_TIMEOUT_SPEC functionality
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following command: 'ping -w -1 localhost'
+		OUTPUT VALUES: ping: bad wait time.
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program		
+
+		IDENTIFIER: 3
+		TEST CASE: test strig argument for PING_TIMEOUT_SPEC functionality
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
