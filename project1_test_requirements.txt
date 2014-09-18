@@ -27,11 +27,8 @@ GNU Ping was chosen as the piece of software to be tested due to its simple, ter
 	Specify  a  timeout, in seconds, before ping exits regardless of how many packets have been sent or received. In this case ping does not stop after count packet are sent, it waits either for
 	deadline expire or until count probes are answered or for some error notification from network.
 
-       -T timestamp option
-	Set special IP  timestamp  options.   timestamp  option  may  be
-	either  tsonly  (only  timestamps),  tsandaddr  (timestamps  and
-	addresses) or tsprespec host1 [host2 [host3 [host4]]] (timestamp
-	prespecified hops).
+		-D     
+	Print timestamp (unix time + microseconds as in gettimeofday) before each line.
 
 		-c count
 	Stop after sending count ECHO_REQUEST packets. With deadline option, ping waits for count ECHO_REPLY packets, until the timeout expires.
