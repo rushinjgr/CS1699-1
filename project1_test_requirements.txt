@@ -195,7 +195,7 @@ REQUIREMENT #5: PING_INTERVAL_SPEC - Specify an interval in seconds as a float v
 	Test Cases:
 
 		IDENTIFIER: 1
-		TEST CASE: test negative number as argument for packet count
+		TEST CASE: test negative number as argument for interval length
 		PRECONDITIONS: Network is connected
 		INPUT VALUES: -1
 		EXECUTION STEPS: execute the following command: 'ping -i -1 {TARGET_IP_ADDR}'
@@ -204,7 +204,7 @@ REQUIREMENT #5: PING_INTERVAL_SPEC - Specify an interval in seconds as a float v
 		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
 
 		IDENTIFIER: 2
-		TEST CASE: test 0 as argument for packet count
+		TEST CASE: test 0 as argument for interval length
 		PRECONDITIONS: Network is connected
 		INPUT VALUES: 0
 		EXECUTION STEPS: execute the following command: 'ping -i 0 {TARGET_IP_ADDR}'
@@ -213,7 +213,7 @@ REQUIREMENT #5: PING_INTERVAL_SPEC - Specify an interval in seconds as a float v
 		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
 
 		IDENTIFIER: 3
-		TEST CASE: test string as argument for packet count
+		TEST CASE: test string as argument for interval length
 		PRECONDITIONS: Network is connected
 		INPUT VALUES: "foo"
 		EXECUTION STEPS: execute the following command: 'ping -i "foo" {TARGET_IP_ADDR}'
@@ -224,8 +224,24 @@ REQUIREMENT #5: PING_INTERVAL_SPEC - Specify an interval in seconds as a float v
 
 NON FUNCTIONAL REQUIREMENTS:
 
-	NON-FUNCTIONAL REQUIREMENT #1:
-	
+	NON-FUNCTIONAL REQUIREMENT #1: PING_RELIABILITY_SPEC
+
+		It must be the case that GNU Ping without fail, and barring external interference such as an unreliable network connection, 
+		continue to iterate until externally forced to halt execution (unless otherwise directed via command line option). This is due mainly
+		to the uniformity of Ping throughout GNU/Linux operating system distributions - an OS that is so widely used as a server operating system
+		must have infallible network tools - especially those as commonplace and relied upon as GNU Ping. GNU Ping is also utilized in numerous 
+		automatically-deployed system administration scripts used in a role including but not not limited to such tasks as verifying network 
+		connectivity, ensuring network robustness, and ensuring properly functioning network hardware such as routers and NICs.
+
+	NON-FUNCTIONAL REQUIREMENT #2: PING_SECURITY_SPEC
+
+		It must be the case that GNU Ping not introduce, allow for the exploitation of, or otherwise compromise network security in any supported environment it 
+		is installed in. As noted in the previous requirement, the wide distribution of such a basic and necessary tool for network administrators MUST
+		be entirely secure in all usage options. The damage caused by a potential security exploit in such a commonplace piece of software would not only be
+		be damaging to those afflicted but also GNU/Linux's reputation as the go-to server operating system as well as the prime exemplar of collaboratively built 
+		open-source software. A negative fallout such as that now associated with OpenSSL demonstrates the potential for such fallout to damage the reputation of and potentially
+		jeopardize the long-term success of such projects. 
+
 
 
 
