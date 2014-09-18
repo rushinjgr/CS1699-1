@@ -226,24 +226,26 @@ NON FUNCTIONAL REQUIREMENTS:
 
 	NON-FUNCTIONAL REQUIREMENT #1: PING_RELIABILITY_SPEC
 
-		It must be the case that GNU Ping without fail, and barring external interference such as an unreliable network connection, 
-		continue to iterate until externally forced to halt execution (unless otherwise directed via command line option). This is due mainly
-		to the uniformity of Ping throughout GNU/Linux operating system distributions - an OS that is so widely used as a server operating system
-		must have infallible network tools - especially those as commonplace and relied upon as GNU Ping. GNU Ping is also utilized in numerous 
-		automatically-deployed system administration scripts used in a role including but not not limited to such tasks as verifying network 
-		connectivity, ensuring network robustness, and ensuring properly functioning network hardware such as routers and NICs.
+		Description: 
+			It must be the case that GNU Ping without fail, and barring external interference such as an unreliable network connection, 
+			continue to iterate until externally forced to halt execution (unless otherwise directed via command line option). This is due mainly
+			to the uniformity of Ping throughout GNU/Linux operating system distributions - an OS that is so widely used as a server operating system
+			must have infallible network tools - especially those as commonplace and relied upon as GNU Ping. GNU Ping is also utilized in numerous 
+			automatically-deployed system administration scripts used in a role including but not not limited to such tasks as verifying network 
+			connectivity, ensuring network robustness, and ensuring properly functioning network hardware such as routers and NICs.
+
+		Test Case: 
+			Prior to the release of GNU Ping to the upstream linux distributions, a monitored release shall first be completed with a specific linux distribution that uses the master branch of the Linux kernel. Because of its stability and mass usage by system administrators, the distribution known as CentOS shall be the first to receive GNU Ping. On an opt-in basis, users of CentOS will be able to use Ping and report
+			any malfunctions in the program. 99% of users MUST report that they were completely satisfied with the application's operation.
 
 	NON-FUNCTIONAL REQUIREMENT #2: PING_SECURITY_SPEC
 
-		It must be the case that GNU Ping not introduce, allow for the exploitation of, or otherwise compromise network security in any supported environment it 
-		is installed in. As noted in the previous requirement, the wide distribution of such a basic and necessary tool for network administrators MUST
-		be entirely secure in all usage options. The damage caused by a potential security exploit in such a commonplace piece of software would not only be
-		be damaging to those afflicted but also GNU/Linux's reputation as the go-to server operating system as well as the prime exemplar of collaboratively built 
-		open-source software. A negative fallout such as that now associated with OpenSSL demonstrates the potential for such fallout to damage the reputation of and potentially
-		jeopardize the long-term success of such projects. 
+		Description: 
+			It must be the case that GNU Ping not introduce, allow for the exploitation of, or otherwise compromise network security in any supported environment it is installed in. As noted in the previous requirement, the wide distribution of such a basic and necessary tool for network administrators MUST be entirely secure in all usage options. The damage caused by a potential security exploit in such a commonplace piece of software would not only be be damaging to those afflicted but also GNU/Linux's reputation as the go-to server operating system as well as the prime exemplar of collaboratively built open-source software. A negative fallout such as that now associated with OpenSSL demonstrates the potential for such fallout to damage the reputation of and potentially jeopardize the long-term success of such projects. 
 
-
-
+		Test Case:
+			In order to ensure that the above requirement is met, it will be necessary to have recognized experts in the field, primarily those developers
+			responsible for the Linux & BSD network stacks, to review the source code and functionality to ensure maximum compliance with security requirements.
 
 	
 
