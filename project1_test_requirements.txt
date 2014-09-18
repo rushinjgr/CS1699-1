@@ -6,7 +6,7 @@ Software Source Code: http://cvs.savannah.gnu.org/viewvc/inetutils/inetutils/pin
 Software Documentation: http://www.gnu.org/software/inetutils/manual/html_node/ping-invocation.html
 
 Introduction
-GNU Ping was chosen as the piece of software to be tested due to its simple, terminal-based input/output, a moderate number of features to test, and the open-source availability of its source code. The subset of GNU Ping to be tested include the following program functionalities: 
+GNU Ping was chosen as the piece of software to be tested due to its simple, terminal-based input/output, a moderate number of features to test, and the open-source availability of its source code. The subset of GNU Ping to be tested includes the following software functionalities: 
 	
 		<Daryl's Feature #1>
 		
@@ -57,6 +57,7 @@ Pre-Test Constants & Definitions:
 		To be terminated at the tester's discretion via the ^C bash command.
 
 Requirement #1: PING_PACKET_DATA -  Command Line Pattern Specification
+    Description: Specifies the contents of the data packet to be transmitted to the target ip address. Up to 16 bytes may be specified.
 
 	Test Cases:
 
@@ -89,7 +90,7 @@ Requirement #1: PING_PACKET_DATA -  Command Line Pattern Specification
 		POSTCONDITIONS: The above specified output value shall be the ONLY output value of the program.		
 
 Requirement #2: PING_TIMEOUT_SPEC -  Command Line Timeout Specification
-    Description: Specfies an amount of time that Ping will continue to produce output as specified by requirement PING_DEFAULT_OUTPUT barring a user or system enforced exit.
+    Description: Specifies an amount of time that Ping will continue to produce output as specified by requirement PING_DEFAULT_OUTPUT barring a user or system enforced exit.
 		
 	Test Cases:
 
@@ -98,7 +99,8 @@ Requirement #2: PING_TIMEOUT_SPEC -  Command Line Timeout Specification
 		PRECONDITIONS: Network is connected.
 		INPUT VALUES: 0
 		EXECUTION STEPS: execute the following command: 'ping -w 0 localhost'
-		OUTPUT VALUES: PING_DEFAULT_OUTPUT
+		OUTPUT VALUES: 
+			PING_DEFAULT_OUTPUT
 		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program
 		
 		IDENTIFIER: 2
@@ -106,17 +108,128 @@ Requirement #2: PING_TIMEOUT_SPEC -  Command Line Timeout Specification
 		PRECONDITIONS: Network is connected.
 		INPUT VALUES: -1
 		EXECUTION STEPS: execute the following command: 'ping -w -1 localhost'
-		OUTPUT VALUES: ping: bad wait time.
+		OUTPUT VALUES: 
+			ping: bad wait time.
 		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program		
 
 		IDENTIFIER: 3
-		TEST CASE: test strig argument for PING_TIMEOUT_SPEC functionality
+		TEST CASE: test string argument for PING_TIMEOUT_SPEC functionality
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: foo
+		EXECUTION STEPS: execute the following command: 'ping -w "foo" localhost'
+		OUTPUT VALUES: 
+			PING_DEFAULT_OUTPUT
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program		
 
 
-		
+REQUIREMENT #3: PING_TIMESTAMP_SPEC - Command Line Timestamp Specification
+	Description: Each iteration of PING_DEFAULT_OUTPUT is supplemented with the standard UNIX timestamp: (unix time + microseconds as in gettimeofday). 
+
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test intended usage of timestamp argument to Ping 
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: N/A
+		EXECUTION STEPS: execute the following command: 'ping -D localhost'
+		OUTPUT VALUES:
+			Each iteration is that of PING_DEFAULT_OUTPUT with the single exception of a unix timestamp appended to the front of each line in the following format:
+
+				[<Unix Timestamp>] 64 bytes from 150.212.243.198: icmp_seq=2 ttl=64 time=199 ms
+
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program		
+
+		IDENTIFIER: 2
+		TEST CASE: test improper usage of Ping's timestamp command
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: 1
+		EXECUTION STEPS: execute the following command: 'ping -D 1 localhost'
+		OUTPUT VALUES:
+			connect: Invalid argument
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program	
+
+		IDENTIFIER: 3
+		TEST CASE: test improper usage of Ping's timestamp command by entering a string
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: "foo"
+		EXECUTION STEPS: execute the following command: 'ping -D "foo" localhost'
+		OUTPUT VALUES:
+			ping: unknown host foo
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program	
+
+REQUIREMENT #4: PING_REPLY_COUNT_SPEC - Specify a number of packets to receive from the target IP address before execution halt
+	Description: Allows the user to specify a number of ping replies to receive prior to the program exiting.
+
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test negative number as argument for packet count
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following command: 'ping -c -1 {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad number of packets to transmit.
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 2
+		TEST CASE: test 0 as argument for packet count
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -c 0 {TARGET_IP_ADDR}'
+		OUTPUT VALUES:
+			ping: bad number of packets to transmit.
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 3
+		TEST CASE: test a string as argument for packet count
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: "foo"
+		EXECUTION STEPS: execute the following command: 'ping -c "foo" {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad number of packets to transmit.
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+REQUIREMENT #5: PING_INTERVAL_SPEC - Specify an interval in seconds as a float value to wait between iterations of PING_DEFAULT_OUTPUT
+	Description: Allows the user to specify the amount of time in between sending of packets
+
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test negative number as argument for packet count
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following command: 'ping -i -1 {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad timing interval
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 2
+		TEST CASE: test 0 as argument for packet count
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -i 0 {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad timing interval
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 3
+		TEST CASE: test string as argument for packet count
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: "foo"
+		EXECUTION STEPS: execute the following command: 'ping -i "foo" {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad timing interval
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program		
+
+
+NON FUNCTIONAL REQUIREMENTS:
+
+	NON-FUNCTIONAL REQUIREMENT #1:
+	
 
 
 
+	
 
 
 
