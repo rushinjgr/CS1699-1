@@ -1,0 +1,33 @@
+Tyler Raborn
+CS1501 Summer 2013
+Assignment Information Sheet for Project 5
+Due Date: 7/29/2013
+
+Development Environment: JDK 7/Eclipse Kepler/Windows 8 Pro 64-bit
+
+Java Source Files:
+	UndirectedGraph.java
+	AdjacencyList.java
+	NetGraph.java
+	
+Additional Files:
+	graph1.txt
+	
+	
+Directions:
+	'javac NetGraph.java' to compile
+	'java NetGraph <file.txt>' to execute
+	enter commands as per spec sheet
+	
+The source files all run and compile without error.
+
+Wow, this project. I really didn't feel like scrambling to decipher the author's code, so I came up with a simple solution: don't! I wrote the entire thing from scratch instead.
+For better or for worse, I feel like I learned a TON. It was really fun, and while of course there were some bugs and long hours of bug-hunting, it honestly went way smoother than I predicted. 
+
+The primary aspects of the project, that is, the adjacency list implementation and the actual algorithms went quite smoothly.
+
+
+BUGS:
+If you attempt to find all paths using a maximum weight that is smaller than any actual path weight, it will crash. 
+
+The project is so complicated, and there are so many possible combos of commands, that I can't GUARANTEE that it is bug free. But I believe it mostly is.
