@@ -1,0 +1,264 @@
+Deliverable 1
+CS-1699 Software Testing - Fall 2014 
+Authors: Daryl Putnam & Tyler Raborn
+Software: GNU Ping 
+Software Source Code: http://cvs.savannah.gnu.org/viewvc/inetutils/inetutils/ping/ping.c
+Software Documentation: http://www.gnu.org/software/inetutils/manual/html_node/ping-invocation.html
+
+Introduction
+GNU Ping was chosen as the piece of software to be tested due to its simple, terminal-based input/output, a moderate number of features to test, and the open-source availability of its source code. The subset of GNU Ping to be tested includes the following software functionalities: 
+	
+		<Daryl's Feature #1>
+		
+		<Daryl's Feature #2>
+		
+		<Daryl's Feature #3>
+		
+		<Daryl's Feature #4>
+		
+		<Daryl's Feature #5>
+
+		-p <pattern>
+	You may specify up to 16 ``pad'' bytes to fill out the packet you send. This is useful for 
+	diagnosing data-dependent problems in a network. For example, -p ff will cause the sent 
+	packet to be filled with all ones. 
+
+       -w deadline
+	Specify  a  timeout, in seconds, before ping exits regardless of how many packets have been sent or received. In this case ping does not stop after count packet are sent, it waits either for
+	deadline expire or until count probes are answered or for some error notification from network.
+
+		-D     
+	Print timestamp (unix time + microseconds as in gettimeofday) before each line.
+
+		-c count
+	Stop after sending count ECHO_REQUEST packets. With deadline option, ping waits for count ECHO_REPLY packets, until the timeout expires.
+	
+		-i interval
+	Wait interval seconds between sending each packet. The default is to wait for one second between each packet normally, 
+	or not to wait in flood mode. Only super-user may set interval to values less 0.2 seconds.		
+	
+Pre-Test Constants & Definitions:
+		PING_DEFAULT_OUTPUT: Defined as a repeating cascade of results of pinging the passed-in ip address in the following format:
+		
+			64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.036 ms
+			64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.068 ms
+			64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.066 ms
+			64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.065 ms
+			64 bytes from 127.0.0.1: icmp_seq=4 ttl=64 time=0.075 ms
+			64 bytes from 127.0.0.1: icmp_seq=5 ttl=64 time=0.077 ms
+			64 bytes from 127.0.0.1: icmp_seq=6 ttl=64 time=0.063 ms
+			64 bytes from 127.0.0.1: icmp_seq=7 ttl=64 time=0.081 ms
+			64 bytes from 127.0.0.1: icmp_seq=8 ttl=64 time=0.065 ms
+			...
+
+		To be terminated at the tester's discretion via the ^C bash command.
+
+Requirement #1: PING_PACKET_DATA -  Command Line Pattern Specification
+    Description: Specifies the contents of the data packet to be transmitted to the target ip address. Up to 16 bytes may be specified.
+
+	Test Cases:
+
+		IDENTIFIER: 0
+		TEST CASE: test 0 argument for PING_PACKET_DATA functionality
+		PRECONDITIONS: Network is connected 
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -p 0 localhost'
+		OUTPUT VALUES: 
+			PATTERN: 0x00
+			PING_DEFAULT_OUTPUT
+		POSTCONDITIONS: The above specified output shall be the ONLY output of this execution.
+	        
+		IDENTIFIER: 1
+		TEST CASE: test -1 argument for PING_PACKET_DATA functionality
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following: 'ping -p -1 localhost'
+		OUTPUT VALUES: 
+			ping: patterns must be specified as hex digits
+		POSTCONDITIONS: The above specified output value shall be the ONLY output value of the program.
+
+		IDENTIFIER: 3
+		TEST CASE: test string argument for PING_PACKET_DATA functionality
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: foo
+		EXECUTION STEPS: execute the following: 'ping -p foo localhost'
+		OUTPUT VALUES: 
+			ping: patterns must be specified as hex digits
+		POSTCONDITIONS: The above specified output value shall be the ONLY output value of the program.		
+
+Requirement #2: PING_TIMEOUT_SPEC -  Command Line Timeout Specification
+    Description: Specifies an amount of time that Ping will continue to produce output as specified by requirement PING_DEFAULT_OUTPUT barring a user or system enforced exit.
+		
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test 0 argument for PING_TIMEOUT_SPEC functionality
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -w 0 localhost'
+		OUTPUT VALUES: 
+			PING_DEFAULT_OUTPUT
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program
+		
+		IDENTIFIER: 2
+		TEST CASE: test -1 argument for PING_TIMEOUT_SPEC functionality
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following command: 'ping -w -1 localhost'
+		OUTPUT VALUES: 
+			ping: bad wait time.
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program		
+
+		IDENTIFIER: 3
+		TEST CASE: test string argument for PING_TIMEOUT_SPEC functionality
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: foo
+		EXECUTION STEPS: execute the following command: 'ping -w "foo" localhost'
+		OUTPUT VALUES: 
+			PING_DEFAULT_OUTPUT
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program		
+
+
+REQUIREMENT #3: PING_TIMESTAMP_SPEC - Command Line Timestamp Specification
+	Description: Each iteration of PING_DEFAULT_OUTPUT is supplemented with the standard UNIX timestamp: (unix time + microseconds as in gettimeofday). 
+
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test intended usage of timestamp argument to Ping 
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: N/A
+		EXECUTION STEPS: execute the following command: 'ping -D localhost'
+		OUTPUT VALUES:
+			Each iteration is that of PING_DEFAULT_OUTPUT with the single exception of a unix timestamp appended to the front of each line in the following format:
+
+				[<Unix Timestamp>] 64 bytes from 150.212.243.198: icmp_seq=2 ttl=64 time=199 ms
+
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program		
+
+		IDENTIFIER: 2
+		TEST CASE: test improper usage of Ping's timestamp command
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: 1
+		EXECUTION STEPS: execute the following command: 'ping -D 1 localhost'
+		OUTPUT VALUES:
+			connect: Invalid argument
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program	
+
+		IDENTIFIER: 3
+		TEST CASE: test improper usage of Ping's timestamp command by entering a string
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: "foo"
+		EXECUTION STEPS: execute the following command: 'ping -D "foo" localhost'
+		OUTPUT VALUES:
+			ping: unknown host foo
+		POSTCONDITIONS:	The above specified output shall be the ONLY value output from the program	
+
+REQUIREMENT #4: PING_REPLY_COUNT_SPEC - Specify a number of packets to receive from the target IP address before execution halt
+	Description: Allows the user to specify a number of ping replies to receive prior to the program exiting.
+
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test negative number as argument for packet count
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following command: 'ping -c -1 {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad number of packets to transmit.
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 2
+		TEST CASE: test 0 as argument for packet count
+		PRECONDITIONS: Network is connected.
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -c 0 {TARGET_IP_ADDR}'
+		OUTPUT VALUES:
+			ping: bad number of packets to transmit.
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 3
+		TEST CASE: test a string as argument for packet count
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: "foo"
+		EXECUTION STEPS: execute the following command: 'ping -c "foo" {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad number of packets to transmit.
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+REQUIREMENT #5: PING_INTERVAL_SPEC - Specify an interval in seconds as a float value to wait between iterations of PING_DEFAULT_OUTPUT
+	Description: Allows the user to specify the amount of time in between sending of packets
+
+	Test Cases:
+
+		IDENTIFIER: 1
+		TEST CASE: test negative number as argument for interval length
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: -1
+		EXECUTION STEPS: execute the following command: 'ping -i -1 {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad timing interval
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 2
+		TEST CASE: test 0 as argument for interval length
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: 0
+		EXECUTION STEPS: execute the following command: 'ping -i 0 {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad timing interval
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program
+
+		IDENTIFIER: 3
+		TEST CASE: test string as argument for interval length
+		PRECONDITIONS: Network is connected
+		INPUT VALUES: "foo"
+		EXECUTION STEPS: execute the following command: 'ping -i "foo" {TARGET_IP_ADDR}'
+		OUTPUT VALUES: 
+			ping: bad timing interval
+		POSTCONDITIONS: The above specified output shall be the ONLY value output from the program		
+
+
+NON FUNCTIONAL REQUIREMENTS:
+
+	NON-FUNCTIONAL REQUIREMENT #1: PING_RELIABILITY_SPEC
+
+		Description: 
+			It must be the case that GNU Ping without fail, and barring external interference such as an unreliable network connection, 
+			continue to iterate until externally forced to halt execution (unless otherwise directed via command line option). This is due mainly
+			to the uniformity of Ping throughout GNU/Linux operating system distributions - an OS that is so widely used as a server operating system
+			must have infallible network tools - especially those as commonplace and relied upon as GNU Ping. GNU Ping is also utilized in numerous 
+			automatically-deployed system administration scripts used in a role including but not not limited to such tasks as verifying network 
+			connectivity, ensuring network robustness, and ensuring properly functioning network hardware such as routers and NICs.
+
+		Test Case: 
+			Prior to the release of GNU Ping to the upstream linux distributions, a monitored release shall first be completed with a specific linux distribution that uses the master branch of the Linux kernel. Because of its stability and mass usage by system administrators, the distribution known as CentOS shall be the first to receive GNU Ping. On an opt-in basis, users of CentOS will be able to use Ping and report
+			any malfunctions in the program. 99% of users MUST report that they were completely satisfied with the application's operation.
+
+	NON-FUNCTIONAL REQUIREMENT #2: PING_SECURITY_SPEC
+
+		Description: 
+			It must be the case that GNU Ping not introduce, allow for the exploitation of, or otherwise compromise network security in any supported environment it is installed in. As noted in the previous requirement, the wide distribution of such a basic and necessary tool for network administrators MUST be entirely secure in all usage options. The damage caused by a potential security exploit in such a commonplace piece of software would not only be be damaging to those afflicted but also GNU/Linux's reputation as the go-to server operating system as well as the prime exemplar of collaboratively built open-source software. A negative fallout such as that now associated with OpenSSL demonstrates the potential for such fallout to damage the reputation of and potentially jeopardize the long-term success of such projects. 
+
+		Test Case:
+			In order to ensure that the above requirement is met, it will be necessary to have recognized experts in the field, primarily those developers
+			responsible for the Linux & BSD network stacks, to review the source code and functionality to ensure maximum compliance with security requirements.
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
